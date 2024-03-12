@@ -1,4 +1,4 @@
-import streamlit as st
+
 import base64
 import streamlit as st
 from rottendetector import rottenCNN  # Import the function from rottendetector.py
