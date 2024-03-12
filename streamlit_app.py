@@ -1,5 +1,7 @@
 import streamlit as st
 import base64
+import streamlit as st
+from rottendetector import rottenCNN  # Import the function from rottendetector.py
 
 def get_base64_of_bin_file(bin_file):
     """Converts binary file to base64 encoded string."""
@@ -37,3 +39,30 @@ st.markdown("""
     </style>
     <div class="welcome-text">Welcome</div>
     """, unsafe_allow_html=True)
+
+# The rest of your Streamlit app code...
+
+# Convert the local file to a base64 string and set it as the background
+set_background_image_from_local_file("rere.png")
+
+# Adding welcome text with some styling
+st.markdown("""
+    <style>
+    .welcome-text {
+        color: white;
+        font-size: 48px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    </style>
+    <div class="welcome-text">Welcome</div>
+    """, unsafe_allow_html=True)
+
+# Add a button to run rottenCNN
+if st.button('Run RottenCNN'):
+    # Call the rottenCNN function from rottendetector.py
+    result = rottenCNN()
+    # Display the result of the function call (if any)
+    st.write(result)
