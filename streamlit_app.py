@@ -3,6 +3,14 @@ import base64
 import streamlit as st
 from rottendetector import rottenCNN  # Import the function from rottendetector.py
 
+
+# Example usage rottenCNN
+#dataset_path = "Test Images"
+#model_load_path = "model//model.pth"
+#results_file_path = "predictions//predictions.txt"
+#run_image_classification(dataset_path, model_load_path, results_file_path)
+
+
 def get_base64_of_bin_file(bin_file):
     """Converts binary file to base64 encoded string."""
     with open(bin_file, 'rb') as file:
