@@ -1,5 +1,10 @@
 import streamlit as st # Import the rottenCNN function from rottendetector.py
 
+def barcode_scanner_page():
+    st.header("Renewable Recipes")
+    # Add the content or functionality for this page
+
+
 # Define page content functions
 def veg_classifier_page():
     st.header("Vegetable Classifier")
@@ -30,7 +35,7 @@ def main():
 
     # Sidebar navigation
     st.sidebar.header("Main Navigation")
-    page = st.sidebar.radio("Go to", ("Veg Classifier", "Rotten Classifier", "Generate Recipe", "Barcode Scanner"))
+    page = st.sidebar.radio("Go to", ("Veg Classifier", "Rotten Classifier", "Generate Recipe", "Barcode Scanner","Renewable Recipes"))
 
     if page == "Veg Classifier":
         veg_classifier_page()
@@ -40,9 +45,11 @@ def main():
         generate_recipe_page()
     elif page == "Barcode Scanner":
         barcode_scanner_page()
+    elif page == "Renewable Recipes":
+        rotten_classifier_page()
 
-    # Main content section (if you want a specific action/button here, add it)
-    st.image("Fonallogopng.png", width=100, caption="Navigate using the sidebar.")
+    # Main content section
+    st.image("Fonallogopng.png", use_column_width=True, caption="Fonallo Logo")
 
     # Example button to run rottenCNN and display its result (place this inside the appropriate page function as needed)
     if st.button('Run RottenCNN'):
