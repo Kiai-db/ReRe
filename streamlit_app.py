@@ -42,7 +42,7 @@ def main():
         barcode_scanner_page()
 
     # Main content section (if you want a specific action/button here, add it)
-    st.image("rere.png", width=100, caption="Navigate using the sidebar.")
+    st.image("fonallogopng.png", width=100, caption="Navigate using the sidebar.")
 
     # Example button to run rottenCNN and display its result (place this inside the appropriate page function as needed)
     if st.button('Run RottenCNN'):
