@@ -1,4 +1,4 @@
-from segment_anything import sam_model_registry, SamAutomaticMaskGenerator
+from segment_local import sam_model_registry, SamAutomaticMaskGenerator
 import cv2
 import numpy as np
 import torch
@@ -75,11 +75,9 @@ def show_anns(anns):
         img[m] = color_mask
     ax.imshow(img)
 
-image_path = "Images/base_image.jpg"  
-your_image = cv2.imread(image_path)
-your_image = cv2.cvtColor(your_image, cv2.COLOR_BGR2RGB)  
-model_type = "vit_h"  #vit_b - 2:10 min, vit_l - 2:45 min, vit_h - 3:30 min
-checkpoint_path = "Crop_Fruit\model\sam_vit_h_4b8939.pth" 
+
+model_type = "vit_l"  #vit_b - 2:10 min, vit_l - 2:45 min, vit_h - 3:30 min
+checkpoint_path = "CNNs\sam_vit_l_0b3195.pth" 
 
 def getobjects(image): 
     print("check0")
@@ -91,17 +89,9 @@ def getobjects(image):
     masks = mask_generator.generate(image)
     print("check3")
 
-    plt.figure(figsize=(20,20))
-    plt.imshow(your_image)
-    show_anns(masks)
-    plt.axis('off')
-    plt.show() 
-    print("done")
-    plt.savefig('ReReimagemask.png')
-
     # Define the directory where you want to save the images
     output_folder = "Crop_Fruit\croppedobjects"
-    imarray = save_cropped_objects(masks, your_image, output_folder)
+    imarray = save_cropped_objects(masks, image, output_folder)
 
 
     print("All objects saved as individual images.")
