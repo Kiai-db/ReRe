@@ -87,6 +87,5 @@ def rottenCNN():
     update_predictions_with_feature_detection(results_file_path, dataset_path)
 
     print("Image classification and feature detection complete. Results updated in predictions.txt.")
-    return "Image classification and feature detection complete. Results updated in predictions.txt."
 
 

@@ -1,5 +1,4 @@
-import streamlit as st
-from rottendetector import rottenCNN  # Import the rottenCNN function from rottendetector.py
+import streamlit as st # Import the rottenCNN function from rottendetector.py
 
 # Define page content functions
 def veg_classifier_page():
@@ -47,8 +46,7 @@ def main():
 
     # Example button to run rottenCNN and display its result (place this inside the appropriate page function as needed)
     if st.button('Run RottenCNN'):
-        result = rottenCNN()
-        st.write(result)
+        st.write("results from RottenCNN will go here...")
 
 if __name__ == "__main__":
     main()
