@@ -1,5 +1,6 @@
+tkinter
 openai
-opencv-python
+cv2
 numpy
 matplotlib
 Pillow
@@ -13,3 +14,4 @@ hydra-core==1.1.1
 timm==0.4.12
 torchvision==0.10.0
 torch==1.9.0
+git+https://github.com/facebookresearch/segment-anything.git
