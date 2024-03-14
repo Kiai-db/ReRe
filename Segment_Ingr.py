@@ -77,7 +77,7 @@ def show_anns(anns):
 
 
 model_type = "vit_l"  #vit_b - 2:10 min, vit_l - 2:45 min, vit_h - 3:30 min
-checkpoint_path = "CNNs\sam_vit_l_0b3195.pth" 
+checkpoint_path = "CNNs/sam_vit_l_0b3195.pth" 
 
 def getobjects(image): 
     print("check0")
