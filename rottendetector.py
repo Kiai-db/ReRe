@@ -67,10 +67,10 @@ def update_predictions_with_feature_detection(predictions_file_path, dataset_pat
 
 def rottenCNN():
     # Paths and configurations
-    dataset_path = "Test Images"
-    model_load_path = "model/model.pth"
+    dataset_path = "TestImages"
+    model_load_path = "CNNs/model.pth"
     results_file_path = "predictions/predictions.txt"
-
+    print("lol")
     transform = transforms.Compose([
         transforms.Resize(256),
         transforms.CenterCrop(224),
@@ -89,3 +89,4 @@ def rottenCNN():
     print("Image classification and feature detection complete. Results updated in predictions.txt.")
 
 
+rottenCNN()
