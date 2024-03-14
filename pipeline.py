@@ -32,5 +32,4 @@ for ingredient in ingredients:
 
 recipe = recipe_generator(Class_Ingr, "easy", "mexican")
 
-
 print(recipe)
