@@ -34,7 +34,7 @@ def save_cropped_objects(masks, original_image, output_folder):
         contours, _ = cv2.findContours(mask.astype(np.uint8), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         
         # Assume fruits do not have sharp angles, less than x degrees
-        if not all(is_contour_smooth(contour, 120) for contour in contours):
+        if not all(is_contour_smooth(contour, 80) for contour in contours):
             continue
         
         # Find the bounding box of the mask
