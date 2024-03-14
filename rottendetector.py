@@ -6,6 +6,13 @@ import cv2
 import numpy as np
 import os
 
+"""
+Class 0: OverRipe
+Class 1: Ripe
+Class 2: Rotten
+Class 3: UnRipe
+"""
+
 def setup_model(model_load_path):
     model = resnet50(pretrained=False)
     num_ftrs = model.fc.in_features
