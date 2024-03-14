@@ -13,17 +13,12 @@ def setup_model(model_load_path):
     model = resnet50(pretrained=False)
     num_ftrs = model.fc.in_features
     model.fc = torch.nn.Linear(num_ftrs, 4)
-    model.load_state_dict(torch.load(model_load_path))
-    if torch.cuda.is_available():
-        model = model.cuda()
+    model.load_state_dict(torch.load(model_load_path, map_location=torch.device('cpu')))
     model.eval()
     return model
 
-def predict_image(model, image_path, transform):
-    image = Image.open(image_path).convert('RGB')
+def predict_image(model, image, transform):
     image = transform(image).unsqueeze(0)
-    if torch.cuda.is_available():
-        image = image.cuda()
     with torch.no_grad():
         outputs = model(image)
         _, preds = torch.max(outputs, 1)
@@ -45,26 +40,25 @@ def detect_features(image):
 def calculate_area(mask):
     return cv2.countNonZero(mask)
 
-def process_predictions(model, image_paths, transform, dataset_path):
+def process_predictions(model, images, transform):
     results = []
-    for image_path in image_paths:
-        predicted_class = predict_image(model, image_path, transform)
+    for image in images:
+        predicted_class = predict_image(model, image, transform)
         if predicted_class in [0, 2]:  # OverRipe or Rotten
-            image = cv2.imread(image_path)
-            bruise_mask = detect_features(image)
+            open_cv_image = np.array(image) 
+            open_cv_image = open_cv_image[:, :, ::-1].copy() 
+            bruise_mask = detect_features(open_cv_image)
             bruise_area = calculate_area(bruise_mask)
-            total_area = image.shape[0] * image.shape[1]
+            total_area = open_cv_image.shape[0] * open_cv_image.shape[1]
             bruise_percentage = (bruise_area / total_area) * 100
-            results.append((image_path, CLASS_LABELS[predicted_class], bruise_percentage))
+            results.append((CLASS_LABELS[predicted_class], bruise_percentage))
         else:
-            results.append((image_path, CLASS_LABELS[predicted_class], 0))  # Ripe or UnRipe with 0% bruise
+            results.append((CLASS_LABELS[predicted_class], 0))  # Ripe or UnRipe with 0% bruise
     return results
 
-def rottenCNN():
-    dataset_path = "TestImages"
+def rottenCNN(images):
     model_load_path = "CNNs/model.pth"
-    results_file_path = "predictions/predictions.txt"
-
+    
     transform = transforms.Compose([
         transforms.Resize(256),
         transforms.CenterCrop(224),
@@ -74,19 +68,5 @@ def rottenCNN():
 
     model = setup_model(model_load_path)
 
-    image_paths = [os.path.join(dataset_path, filename) for filename in os.listdir(dataset_path) if filename.lower().endswith(('.png', '.jpg', '.jpeg'))]
-
-    results = process_predictions(model, image_paths, transform, dataset_path)
-
-# Logging the results
-    with open(results_file_path, 'w') as results_file:
-        for image_path, predicted_class, bruise_percentage in results:
-            line = f" {predicted_class}"
-            if bruise_percentage > 0:
-                line += f", Bruise Percentage: {bruise_percentage:.2f}%\n"
-            else:
-                line += ", Bruise Percentage: 0%\n"  
-            results_file.write(line)
-
-
-    print("Image classification and feature detection complete. Results updated in predictions.txt.")
+    results = process_predictions(model, images, transform)
+    return results
