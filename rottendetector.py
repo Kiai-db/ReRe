@@ -81,7 +81,7 @@ def rottenCNN():
 # Logging the results
     with open(results_file_path, 'w') as results_file:
         for image_path, predicted_class, bruise_percentage in results:
-            line = f"{os.path.basename(image_path)}: {predicted_class}"
+            line = f" {predicted_class}"
             if bruise_percentage > 0:
                 line += f", Bruise Percentage: {bruise_percentage:.2f}%\n"
             else:
@@ -90,5 +90,3 @@ def rottenCNN():
 
 
     print("Image classification and feature detection complete. Results updated in predictions.txt.")
-
-rottenCNN()
