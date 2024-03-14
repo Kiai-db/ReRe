@@ -1,8 +1,5 @@
-MicrosoftTeams-image (1).png: 2
-MicrosoftTeams-image (2).png: 1
-MicrosoftTeams-image.png: 1
-object_2.png: 2
-three-rotten-apples-on-white-260nw-264253049.jpeg: 2
-MicrosoftTeams-image (1).png: Bruise Percentage: 15.22%
-object_2.png: Bruise Percentage: 40.92%
-three-rotten-apples-on-white-260nw-264253049.jpeg: Bruise Percentage: 9.79%
+MicrosoftTeams-image (1).png: Rotten, Bruise Percentage: 15.22%
+MicrosoftTeams-image (2).png: Ripe, Bruise Percentage: 0%
+MicrosoftTeams-image.png: Ripe, Bruise Percentage: 0%
+object_2.png: Rotten, Bruise Percentage: 40.92%
+three-rotten-apples-on-white-260nw-264253049.jpeg: Rotten, Bruise Percentage: 9.79%

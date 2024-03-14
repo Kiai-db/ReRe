@@ -6,12 +6,8 @@ import cv2
 import numpy as np
 import os
 
-"""
-Class 0: OverRipe
-Class 1: Ripe
-Class 2: Rotten
-Class 3: UnRipe
-"""
+# Define classes for readability
+CLASS_LABELS = ["OverRipe", "Ripe", "Rotten", "UnRipe"]
 
 def setup_model(model_load_path):
     model = resnet50(pretrained=False)
@@ -23,18 +19,16 @@ def setup_model(model_load_path):
     model.eval()
     return model
 
-def predict_and_log(model, image_paths, transform, results_file_path):
-    with open(results_file_path, 'w') as results_file:
-        for image_path in image_paths:
-            image = Image.open(image_path).convert('RGB')
-            image = transform(image).unsqueeze(0)
-            if torch.cuda.is_available():
-                image = image.cuda()
-            with torch.no_grad():
-                outputs = model(image)
-                _, preds = torch.max(outputs, 1)
-                predicted_class = preds.item()
-            results_file.write(f"{os.path.basename(image_path)}: {predicted_class}\n")
+def predict_image(model, image_path, transform):
+    image = Image.open(image_path).convert('RGB')
+    image = transform(image).unsqueeze(0)
+    if torch.cuda.is_available():
+        image = image.cuda()
+    with torch.no_grad():
+        outputs = model(image)
+        _, preds = torch.max(outputs, 1)
+        predicted_class = preds.item()
+    return predicted_class
 
 def detect_features(image):
     hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
@@ -51,33 +45,26 @@ def detect_features(image):
 def calculate_area(mask):
     return cv2.countNonZero(mask)
 
-def update_predictions_with_feature_detection(predictions_file_path, dataset_path):
-    images_to_process = []
-    with open(predictions_file_path, 'r') as file:
-        lines = file.readlines()
-        for line in lines:
-            parts = line.strip().split(': ')
-            if parts[1] in ['0', '2']:
-                images_to_process.append(parts[0])
-    bruise_percentage_results = {}
-    for image_name in images_to_process:
-        image_path = os.path.join(dataset_path, image_name)
-        image = cv2.imread(image_path)
-        bruise_mask = detect_features(image)
-        bruise_area = calculate_area(bruise_mask)
-        total_area = image.shape[0] * image.shape[1]
-        bruise_percentage = (bruise_area / total_area) * 100
-        bruise_percentage_results[image_name] = bruise_percentage
-    with open(predictions_file_path, 'a') as file:
-        for image_name, percentage in bruise_percentage_results.items():
-            file.write(f"{image_name}: Bruise Percentage: {percentage:.2f}%\n")
+def process_predictions(model, image_paths, transform, dataset_path):
+    results = []
+    for image_path in image_paths:
+        predicted_class = predict_image(model, image_path, transform)
+        if predicted_class in [0, 2]:  # OverRipe or Rotten
+            image = cv2.imread(image_path)
+            bruise_mask = detect_features(image)
+            bruise_area = calculate_area(bruise_mask)
+            total_area = image.shape[0] * image.shape[1]
+            bruise_percentage = (bruise_area / total_area) * 100
+            results.append((image_path, CLASS_LABELS[predicted_class], bruise_percentage))
+        else:
+            results.append((image_path, CLASS_LABELS[predicted_class], 0))  # Ripe or UnRipe with 0% bruise
+    return results
 
 def rottenCNN():
-    # Paths and configurations
     dataset_path = "TestImages"
     model_load_path = "CNNs/model.pth"
     results_file_path = "predictions/predictions.txt"
-    print("lol")
+
     transform = transforms.Compose([
         transforms.Resize(256),
         transforms.CenterCrop(224),
@@ -89,12 +76,19 @@ def rottenCNN():
 
     image_paths = [os.path.join(dataset_path, filename) for filename in os.listdir(dataset_path) if filename.lower().endswith(('.png', '.jpg', '.jpeg'))]
 
-    predict_and_log(model, image_paths, transform, results_file_path)
+    results = process_predictions(model, image_paths, transform, dataset_path)
 
-    update_predictions_with_feature_detection(results_file_path, dataset_path)
+# Logging the results
+    with open(results_file_path, 'w') as results_file:
+        for image_path, predicted_class, bruise_percentage in results:
+            line = f"{os.path.basename(image_path)}: {predicted_class}"
+            if bruise_percentage > 0:
+                line += f", Bruise Percentage: {bruise_percentage:.2f}%\n"
+            else:
+                line += ", Bruise Percentage: 0%\n"  
+            results_file.write(line)
+
 
     print("Image classification and feature detection complete. Results updated in predictions.txt.")
 
-    return result
-
-
+rottenCNN()
