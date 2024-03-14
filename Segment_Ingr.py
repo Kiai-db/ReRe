@@ -96,9 +96,3 @@ def getobjects(image):
 
     print("All objects saved as individual images.")
     return imarray
-
-
-
-
-
-
