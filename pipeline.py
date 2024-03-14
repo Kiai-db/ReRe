@@ -20,14 +20,11 @@ ingredients = classify_ingr(pil_image_array)   #ingredient_i = (image, pred_clas
 Class_Per_Ingr = []
 Class_Ingr = []
 for ingredient in ingredients:
-    result = rottenCNN([ingredient[0]])  
-    print(result)
-    print(result[0])
-    print(result[1])
+    result = rottenCNN([ingredient[0]])
     Class_Per_Ingr.append((result[0], result[1], ingredient[0]))
     Class_Ingr.append((ingredient[0], result[0]))
         
-    if result[1][1] != 0:  
+    if result[1] > 0:  
         print(f"{ingredient[0]} is {result[1]}% rotten.")
         if result[1] > 50:
             print("Bin the ingredient.")
