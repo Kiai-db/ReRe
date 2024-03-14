@@ -89,4 +89,3 @@ def rottenCNN():
     print("Image classification and feature detection complete. Results updated in predictions.txt.")
 
 
-]

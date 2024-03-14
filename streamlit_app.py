@@ -1,72 +1,83 @@
+import streamlit as st # Import the rottenCNN function from rottendetector.py
+from Segment_Ingr import getobjects
+from classify_ingr import classify_ingr
+from PIL import Image
+import cv2
+def barcode_scanner_page():
+    st.header("Renewable Recipes")
+    # Add the content or functionality for this page
 
-import base64
-import streamlit as st
-from rottendetector import rottenCNN  # Import the function from rottendetector.py
 
+def veg_classifier_page():
+    st.header("Vegetable Classifier")
 
+    # Upload image from files
+    uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
+    # Take a photo with the system's camera
+    camera_image = st.camera_input("Take a picture")
 
+    if uploaded_file is not None:
+        # Convert the uploaded file to an PIL Image
+        image = Image.open(uploaded_file)
+        st.image(image, caption='Uploaded Image.', use_column_width=True)
+        process_and_classify_image(image)
+    elif camera_image is not None:
+        # Convert the camera image to an PIL Image
+        image = Image.open(camera_image)
+        st.image(image, caption='Captured Image.', use_column_width=True)
+        process_and_classify_image(image)
 
+def process_and_classify_image(image):
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  
+    pil_image_array = getobjects(image)
+    
+    ingredients = classify_ingr(pil_image_array)
+    st.write("Identified Ingredients:", ingredients)
 
-def get_base64_of_bin_file(bin_file):
-    """Converts binary file to base64 encoded string."""
-    with open(bin_file, 'rb') as file:
-        content = file.read()
-    return base64.b64encode(content).decode()
+def rotten_classifier_page():
+    st.header("Rotten Classifier")
+    # Add the content or functionality for this page
 
-def set_background_image_from_local_file(path_to_file):
-    """Creates CSS to set the background image from a local file converted to base64."""
-    bin_str = get_base64_of_bin_file(path_to_file)
-    background_image_style = f"""
+def generate_recipe_page():
+    st.header("Generate Recipe")
+    # Add the content or functionality for this page
+
+def barcode_scanner_page():
+    st.header("Barcode Scanner")
+    # Add the content or functionality for this page
+
+# Main app
+def main():
+    # Set the background color to light green
+    st.markdown("""
     <style>
-    .stApp {{
-      background-image: url("data:image/png;base64,{bin_str}");
-      background-size: cover;
-    }}
-    </style>
-    """
-    st.markdown(background_image_style, unsafe_allow_html=True)
-
-# Convert the local file to a base64 string and set it as the background
-set_background_image_from_local_file("rere.png")
-
-# Adding welcome text with some styling
-st.markdown("""
-    <style>
-    .welcome-text {
-        color: white;
-        font-size: 48px;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+    .stApp {
+      background-color: #e3ffad;
     }
     </style>
-    <div class="welcome-text">Welcome</div>
     """, unsafe_allow_html=True)
 
-# The rest of your Streamlit app code...
+    # Sidebar navigation
+    st.sidebar.header("Main Navigation")
+    page = st.sidebar.radio("Go to", ("Alex: Veg Classifier", "Husain: Rotten Classifier", "James: Generate Recipe", "George: Barcode Scanner","Group: Renewable Recipes"))
 
-# Convert the local file to a base64 string and set it as the background
-set_background_image_from_local_file("rere.png")
+    if page == "Alex: Veg Classifier":
+        veg_classifier_page()
+    elif page == "Husain: Rotten Classifier":
+        rotten_classifier_page()
+    elif page == "James: Generate Recipe":
+        generate_recipe_page()
+    elif page == "George: Barcode Scanner":
+        barcode_scanner_page()
+    elif page == "Group: Renewable Recipes":
+        rotten_classifier_page()
 
-# Adding welcome text with some styling
-st.markdown("""
-    <style>
-    .welcome-text {
-        color: white;
-        font-size: 48px;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-    }
-    </style>
-    <div class="welcome-text">Welcome</div>
-    """, unsafe_allow_html=True)
+    # Main content section
+    st.image("Fonallogopng.png", use_column_width=True, caption="Fonallo Logo")
 
-# Add a button to run rottenCNN
-if st.button('Run RottenCNN'):
-    # Call the rottenCNN function from rottendetector.py
-    result = rottenCNN()
-    # Display the result of the function call (if any)
-    st.write(result)
+    # Example button to run rottenCNN and display its result (place this inside the appropriate page function as needed)
+    if st.button('Run RottenCNN'):
+        st.write("results from RottenCNN will go here...")
+
+if __name__ == "__main__":
+    main()

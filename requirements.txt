@@ -1,0 +1,15 @@
+openai
+opencv-python
+numpy
+matplotlib
+Pillow
+streamlit
+keras
+yacs
+pytorch_lightning==1.4.9
+torchmetrics==0.5.1
+omegaconf==2.1.1
+hydra-core==1.1.1
+timm==0.4.12
+torchvision==0.10.0
+torch==1.9.0
