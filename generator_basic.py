@@ -42,7 +42,7 @@ class IngredientsApp:
         )
         return response['choices'][0]['message']['content']
 
-def main():
+def generator():
     app = IngredientsApp()
 
     # Example selections
