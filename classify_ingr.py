@@ -4,7 +4,7 @@ from keras.preprocessing.image import img_to_array
 import numpy as np
 import cv2
 # Load the model
-model = load_model('CNNs\ReReCNN.h5')
+model = load_model('CNNs\ReReCNNv7.keras')
 classified_objects = []
 # Define your class names
 class_names = [
