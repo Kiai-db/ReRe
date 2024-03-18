@@ -1,6 +1,6 @@
 import torch
 from torchvision import transforms
-from torchvision.models import resnet50
+from torchvision.models import resnet101
 from PIL import Image
 import cv2
 import numpy as np
@@ -10,7 +10,7 @@ import os
 CLASS_LABELS = ["OverRipe", "Ripe", "Rotten", "UnRipe"]
 
 def setup_model(model_load_path):
-    model = resnet50(pretrained=False)
+    model = resnet101(pretrained=False)
     num_ftrs = model.fc.in_features
     model.fc = torch.nn.Linear(num_ftrs, 4)
     model.load_state_dict(torch.load(model_load_path, map_location=torch.device('cpu')))
@@ -56,7 +56,7 @@ def process_predictions(model, images, transform):
     return results
 
 def rottenCNN(images):
-    model_load_path = "CNNs/model.pth"
+    model_load_path = "CNNs/model101.pth"
     
     transform = transforms.Compose([
         transforms.Resize(256),
