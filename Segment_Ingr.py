@@ -3,9 +3,14 @@ import cv2
 import numpy as np
 import torch
 import matplotlib.pyplot as plt
-
+import imagehash
 from PIL import Image
 
+
+def rgba_to_rgb_white_bg(pil_image):
+    rgb_image = Image.new("RGB", pil_image.size, (255, 255, 255))
+    rgb_image.paste(pil_image, mask=pil_image.split()[3])  # Split off the alpha channel and use as mask
+    return rgb_image
 
 
 def is_contour_smooth(contour, threshold_angle):
@@ -22,44 +27,49 @@ def is_contour_smooth(contour, threshold_angle):
     return True
 
 def save_cropped_objects(masks, original_image, output_folder):
-    image_array = []  # Initialize an empty list to store the PIL Images
-    for i, ann in enumerate(masks):
-        mask = ann['segmentation']  # This should be a 2D numpy array
+    image_array = []
+    image_hashes = set()  # To store hashes of images already processed
 
-        # Skip small masks
-        if mask.sum() < 5000:  # Adjust the threshold as needed
+    for i, ann in enumerate(masks):
+        mask = ann['segmentation']
+
+        if mask.sum() < 5000:
             continue
 
-        # Find contours in the mask
         contours, _ = cv2.findContours(mask.astype(np.uint8), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         
-        # Assume fruits do not have sharp angles, less than x degrees
-        if not all(is_contour_smooth(contour, 80) for contour in contours):
+        if not all(is_contour_smooth(contour, 100) for contour in contours):
             continue
-        
-        # Find the bounding box of the mask
+
         rows = np.any(mask, axis=1)
         cols = np.any(mask, axis=0)
         rmin, rmax = np.where(rows)[0][[0, -1]]
         cmin, cmax = np.where(cols)[0][[0, -1]]
 
-        # Crop the mask and image
         mask_cropped = mask[rmin:rmax, cmin:cmax]
         image_cropped = original_image[rmin:rmax, cmin:cmax]
 
-        # Create an RGBA image with a transparent background
-        # Only the object itself will be opaque
         output_image = np.zeros((rmax-rmin, cmax-cmin, 4), dtype=np.uint8)
         output_image[..., :3] = image_cropped
-        output_image[..., 3] = mask_cropped * 255  # Alpha channel
+        output_image[..., 3] = mask_cropped * 255
 
-        # Convert to PIL Image and add to the list
         pil_image = Image.fromarray(output_image)
-        image_array.append(pil_image)
+        pil_image_rgb = rgba_to_rgb_white_bg(pil_image)
 
-    return image_array  # Return the list of PIL Images
+        # Compute the hash of the current image
+        current_hash = imagehash.phash(pil_image_rgb)
 
+        # Check if a similar image has already been processed
+        if any(current_hash - stored_hash <= 50 for stored_hash in image_hashes):
+            # If similar, skip saving this image
+            continue
+        else:
+            # If not similar, save the image and its hash
+            image_hashes.add(current_hash)
+            image_array.append(pil_image_rgb)
+            # Optionally save the image to a file here
 
+    return image_array
 def show_anns(anns):
     if len(anns) == 0:
         return
@@ -76,8 +86,8 @@ def show_anns(anns):
     ax.imshow(img)
 
 
-model_type = "vit_l"  #vit_b - 2:10 min, vit_l - 2:45 min, vit_h - 3:30 min
-checkpoint_path = "CNNs/sam_vit_l_0b3195.pth" 
+model_type = "vit_h"  #vit_b - 2:10 min, vit_l - 2:45 min, vit_h - 3:30 min
+checkpoint_path = "CNNs/sam_vit_h_4b8939.pth" 
 
 def getobjects(image): 
     print("check0")
