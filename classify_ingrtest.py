@@ -29,7 +29,7 @@ def classify_ingr(pil_image):
 
 
 
-fruitpic = Image.open('testimage/rotated_by_15_Screen Shot 2018-06-08 at 5.29.13 PM.png')
+fruitpic = Image.open('DemoImages/B.jpg')
 
 result = classify_ingr(fruitpic)
 

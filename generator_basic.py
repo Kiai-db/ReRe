@@ -15,9 +15,7 @@ def recipe_generator(ingredients_ripeness, difficulty, cuisine):
 
             # Check selected ingredients
             for ingredient, ripeness in ingredients_ripeness:
-                ripeness_str = self.convert_ripeness_to_string(ripeness)
-                if ripeness > 0:  # Assuming ripeness is greater than 0 indicates selection
-                    self.ingredients.append((ingredient, ripeness_str))
+                self.ingredients.append((ingredient, ripeness))
 
         def display_ingredients_list(self, ingredients_ripeness, difficulty, cuisine):
             # Update selected ingredients
@@ -43,17 +41,7 @@ def recipe_generator(ingredients_ripeness, difficulty, cuisine):
             )
             return response['choices'][0]['message']['content']
 
-        def convert_ripeness_to_string(self, ripeness):
-            if ripeness == 0:
-                return "overripe"
-            elif ripeness == 1:
-                return "ripe"
-            elif ripeness == 2:
-                return "rotten"
-            elif ripeness == 3:
-                return "unripe"
-            else:
-                return ""
+
 
     app = IngredientsApp()
     completion_message = app.display_ingredients_list(ingredients_ripeness, difficulty, cuisine)

@@ -1,4 +1,3 @@
-from Segment_Ingr import getobjects  # Make sure this function is properly defined
 from keras.models import load_model
 from keras.preprocessing.image import img_to_array
 import numpy as np
@@ -11,7 +10,7 @@ model = load_model('CNNs\ReReCNNv7.keras')
 
 # Define your class names
 class_names = [
-    "apple", "banana", "bitter_gourd", "capsicum", "orange", "tomato"
+    "apple", "banana", "banana", "capsicum", "orange", "tomato"
 ]
 
 def empty_folder(folder):
@@ -19,8 +18,9 @@ def empty_folder(folder):
         shutil.rmtree(folder)
     os.makedirs(folder)
 
+
 # Define a confidence threshold
-confidence_threshold = 0.90  # for example, 75%
+confidence_threshold = 0.90  # = 0.x, x%
 
 # Process each PIL Image for classification
 def classify_ingr(pil_images):
@@ -39,7 +39,7 @@ def classify_ingr(pil_images):
         predictions = model.predict(img_array)
         predicted_class_index = np.argmax(predictions, axis=1)[0]
         predicted_confidence = np.max(predictions, axis=1)[0]
-        
+        print("pred: ", predicted_confidence)
         # Check if the prediction confidence is above the threshold
         if predicted_confidence >= confidence_threshold:
             predicted_class_name = class_names[predicted_class_index]
@@ -50,7 +50,7 @@ def classify_ingr(pil_images):
         else:
             # Here we append 'uncertain' label or skip appending depending on requirements
             print("Not confident enough to classify")
-            classified_objects.append((pil_image, 'uncertain'))  # or just continue without appending
+            #classified_objects.append((pil_image, 'uncertain'))  # or just continue without appending
             image_path = os.path.join(output_folder, f"object_{num}_uncertain.png")
             pil_image.save(image_path)
 

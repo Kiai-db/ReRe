@@ -41,6 +41,7 @@ def calculate_area(mask):
     return cv2.countNonZero(mask)
 
 def process_predictions(model, images, transform):
+    result = []
     for image in images:
         predicted_class = predict_image(model, image, transform)
         if predicted_class in [0, 2]:  # OverRipe or Rotten
@@ -50,10 +51,10 @@ def process_predictions(model, images, transform):
             bruise_area = calculate_area(bruise_mask)
             total_area = open_cv_image.shape[0] * open_cv_image.shape[1]
             bruise_percentage = (bruise_area / total_area) * 100
-            results = (CLASS_LABELS[predicted_class], bruise_percentage)
+            result.append((CLASS_LABELS[predicted_class], bruise_percentage))
         else:
-            results = (CLASS_LABELS[predicted_class], 0)  # Ripe or UnRipe with 0% bruise
-    return results
+            result.append((CLASS_LABELS[predicted_class], 0))  # Ripe or UnRipe with 0% bruise
+    return result
 
 def rottenCNN(images):
     model_load_path = "CNNs/model101.pth"
