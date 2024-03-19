@@ -1,6 +1,6 @@
 from Segment_Ingr import getobjects
 from classify_ingr import classify_ingr
-# from generator_basic import recipe_generator
+from generator_basic import recipe_generator
 from rottendetector import rottenCNN
 from PIL import Image
 import cv2
@@ -33,5 +33,9 @@ for ingredient in ingredients:
         else:
             print("Ensure to remove the rotten part of the fruit, it is salvageable!")
 
-#recipe = recipe_generator(Class_Ingr, "easy", "mexican")
-#print(recipe)
+#James
+# Difficulty and cuisine come from user input in app
+
+recipe = recipe_generator(Class_Ingr, difficulty, cuisine)
+print("3")
+print(recipe)
