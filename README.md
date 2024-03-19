@@ -7,6 +7,8 @@ rere is an application for recognising ingredients, spotting imperfections and g
 
 ### Pip install
 
+the necessary packages are installable from the requirements file, however if this fails they are listed below:
+
 ```bash
 openai  
 opencv-python  
